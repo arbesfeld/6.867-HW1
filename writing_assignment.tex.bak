@@ -46,9 +46,9 @@
 
 \begin{document}
 \pagestyle{myheadings}          %% Supports custom headers.
-\markboth{\sc 6.867 - HW1}{\sc
-6.867 - HW1}                  %% Running right header
-\title{6.867 - Homework 1}           %% For first page
+\markboth{\sc 6.837 - HW1}{\sc
+6.837 - HW1}                  %% Running right header
+\title{6.837 - Homework 1}           %% For first page
 \author{Akhil Raju and Matthew Arbesfeld}
 \date{September 28, 2014}         %% Change \today to draft date if you want
 \maketitle
