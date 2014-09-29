@@ -65,11 +65,11 @@ Our data set consists of 10 points generated from the function $\sin(2 \pi x)$. 
 1 & \phi_1(x^{(2)}) & \phi_2(x^{(2)}) & ... & \phi_D(x^{(2)}) \\
 & ......... \\
 1 & \phi_1(x^{(n)}) & \phi_2(x^{(n)}) & ... & \phi_D(x^{(n)}) \end{array} \right)\] 
-Since we use sum-squared distance as our error metric, we choose a weight vector $W$ that minimizes $(\textbf{X}W - Y)^\textnormal{T} (\textbf{X}W - Y)$. Setting the derivative of this expression with respect to $W$ equal to 0 and then solving for $W$ yields an exact solution:
+With sum-squared distance as our error metric, we choose a weight vector $W$ that minimizes $(\textbf{X}W - Y)^\textnormal{T} (\textbf{X}W - Y)$. Setting the derivative of this expression with respect to $W$ equal to 0 and then solving for $W$ yields an exact solution:
 \begin{equation} \label{eq-analytic}
 	W = (\textbf{X}^\textnormal{T}\textbf{X})^{-1}\textbf{X}^{\textnormal{T}}Y
 \end{equation}
-\indent Using a simple feature set of polynomial basis $\phi_1(x) = x,\ldots,\phi_D(x) = x^D$ yields the solutions as shown in Figure~\ref{fig-analytic}. As $D$ increases, the sum-squared error decreases, but we can clearly see that the solution is overfitting to the data. $D \approx 3$ produced the most accurate representation of the data. 
+\indent With the simple feature set of polynomial basis $\phi_1(x) = x,\ldots,\phi_D(x) = x^D$, we get the solutions as shown in Figure~\ref{fig-analytic}. As $D$ increases, the sum-squared error decreases, but we can clearly see that the solution is over-fitting to the data. $D \approx 3$ produced the most accurate representation of the underlying generator function. 
 \begin{figure}[h!]\label{fig-analytic}
   \caption{Analytic linear regression solution for simple polynomial basis of various sizes.}
   \centering
@@ -97,7 +97,7 @@ In order to avoid over-fitting, we introduce a parameter $\lambda$ which governs
 \begin{equation}
 W_{ridge} = (\textbf{Z}^\textnormal{T}\textbf{Z}+\lambda \textbf{I})^{-1} \textbf{Z}^\textnormal{T} Y_c,
 \end{equation}
-where $\textbf{Z}$ is a "centered" data matrix ($z_j^{(i)} = x_j^{(i)} - \bar{x}_j$), and $Y_c$ is a "centered" version of $Y$ where the mean of all values is 0. \\
+where $\textbf{Z}$ is a ``centered" data matrix ($z_j^{(i)} = x_j^{(i)} - \bar{x}_j$), and $Y_c$ is a ``centered" version of $Y$ where the mean of all values is 0. \\
 \\
 \indent
 
@@ -113,5 +113,25 @@ Ridge regression was implemented and tested on the same data set as in Section~\
 
 \subsection{Model Selection}
 
+\begin{figure}[h!]\label{fig-training}
+  \caption{Training parameters for data set B. On the left, we choose the feature space that minimizes validation error. On the right, we choose a value of lambda that minimizes validation error. }
+  \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_2_training.png}
+\end{figure}
+
+\begin{figure}[h!]\label{fig-result}
+  \caption{ Solution  for data set B with approximately optimal parameters in both the training data set (left) and validation data set (right). }
+  \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_2_result.png}
+\end{figure}
+
+In order to accurately model the data, we have to systematically choose parameters that satisfy previously unseen data. In this case, we were given two ``training" data sets and one ``validation" set. To determine the optimal parameters, we loop through a variety of feature spaces and $\lambda$ values. For each pair of values, we determine our weight vector $W$ from the training data set and then measure its performance on the validation data set. Figure~\ref{fig-training} shows the validation error on data set B for a variety of feature sizes and lambda values, and Figure~\ref{fig-result} shows the resulting weight vector that optimized validation performance. We found that $D=3, \lambda=0.1$ produced the best solution for data set B, and $D=1,\lambda=0$ produced the best solution for data set A.
 \subsection{Real World Data}
+\begin{figure}[h!]\label{fig-blog}
+  \caption{ Optimizing $\lambda$ for the blog data set. }
+  \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_3_choosing_lambda.png}
+\end{figure}
+
+We were also given a real world data which mapped blog feedback rates to various environmental parameters. We used a simple linear model for this case and used the training/validation data sets to determine an optimal $\lambda$ parameter. We tested $\lambda$ values from $10^{-7}$ to $10^{10}$ and observed that a $\lambda$ value of approximately $10^7$ minimized validation error (see Figure~\ref{fig-blog}).
 \end{document}
