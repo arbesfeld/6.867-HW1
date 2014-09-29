@@ -163,4 +163,36 @@ In order to accurately model the data, we have to systematically choose paramete
 \end{figure}
 
 We were also given a real world data which mapped blog feedback rates to various environmental parameters. We used a simple linear model for this case and used the training/validation data sets to determine an optimal $\lambda$ parameter. We tested $\lambda$ values from $10^{-7}$ to $10^{10}$ and observed that a $\lambda$ value of approximately $10^7$ minimized validation error (see Figure~\ref{fig-blog}).
+
+\section{Generalizations}
+
+The procedure used above for model and parameter selection can be applied to different regression techniques. Ridge regression uses $L_2$ norms for defining the error between the predicted and actual data values and for the regularization term. In this section we will explore what happens when we use an $L_1$ norm for either of those terms. The change in the error criterion will affect which model we choose and the performance of our solution.
+
+\subsection{LAD Regression}
+
+The following is the cost we are minimizing for "least absolute deviations" (LAD) regressions: \[\sum\limits_{i=1}^{N} |y^{(i)} - w_0 - w \cdot x^{(i)}| + \lambda * ||w||_2\]
+
+Running through the model selection procedure described in the preceding section, get that the optimal $D=1, \lambda=0.01$ for data set A, and $D=2, \lambda = 0.1$ for data set B. The solutions are shown in Figure \ref{lad-lasso}. 
+
+\subsection{Lasso Regression}
+
+The following is the cost we are minimizing for Lasso regressions: \[\sum\limits_{i=1}^{N} (y^{(i)} - w_0 - w \cdot x^{(i)})^2 + \lambda * ||w||_1\]
+
+Running through the model selection procedure described in the preceding section, get that the optimal $D=1, \lambda=1$ for data set A, and $D=3, \lambda = 1$ for data set B. The solutions are shown in Figure \ref{lad-lasso}. 
+
+\begin{figure}[h!]\label{lad-lasso}
+  \caption{Different regressors yield different solutions. The left image shows the optimal solutions trained on data set A and data set B using LAD regression. The right image shows the optimal solutions trained using Lasso regression. The solutions vary in their weights, model (order of polynomal), and values of $\lambda$. }
+  \centering
+    \includegraphics[width=0.35\textwidth]{figures/4_1_lad_fit_results.png}
+    \includegraphics[width=0.35\textwidth]{figures/4_2_lasso_fit_results.png}
+\end{figure}
+
+\subsection{Choosing Regressors}
+
+The main difference between LAD and Lasso is the constraints they put on prediction errors versus the constraints on the magnitude of the weights. By definition, an $L_2$ norm yields a stronger constraint than an $L_1$ norm, meaning that Lasso puts a tighter constraint on the prediction errors than LAD does. Conversely, LAD allows the prediction errors to be larger while strongly limiting the magnitude of the weights. 
+
+LAD regression is more appropriate in cases when we want to keep the weights as small as possible. This might be the case when we want to avoid overfitting or if we have a large feature set but know that only a few of the features have a significant impact. LAD can help highlight such features. The example in Figure \ref{lad-lasso} shows how LAD can help avoid overfitting. The solution trained on data set B using Lasso overfitted on the training data, yielding a predictor that does not fit the validation data well. The LAD predictor for data set B, on the other hand, performs well with the validation data.
+
+Lasso is more appropriate when we are most concerned about reducing the prediction error, even at the expense of having larger weights. This stronger restriction on errors and looser restriction on weights makes it so Lasso more closely finds the weights that yield the minimum loss if loss is defined by the absolute value loss: $L(p,a) = |p - a|$. Even though this is an $L_1$ norm-type of definition for loss, Lasso does a better job of minimizing it than LAD because it has looser constraints on the weights.
+
 \end{document}
