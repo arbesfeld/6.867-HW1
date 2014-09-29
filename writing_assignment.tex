@@ -54,6 +54,35 @@
 \maketitle
 \textbf{XXX fix figure links}
 
+\section{Implementing Gradient Descent}
+
+\subsection{Background}
+Gradient descent is a common numerical method for finding local minima or maxima in a given function. Given a starting point on the function, we follow the gradient towards local extrema. The iterative process for finding a local minimum can be described by the following equation: \[\theta_{k+1} = \theta_k - \gamma \nabla F(\theta_k)\] where $\gamma$ is the step size. The process ends when $|F(\theta_{k+1}) - F(\theta)|$ falls below some threshold convergence criterion $c$. 
+
+\subsection{Choice of Parameters}
+
+The choice of which starting point $\theta_0$, step size $\gamma$, and convergence threshold $c$ greatly affect the behavior of gradient descent. 
+
+The effect of $\theta_0$ is most apparent for a non-convex function with multiple minima. Take $F(x) = \sum\limits_{i=1}^{2} {x_i}^4 - {x_i}^3 - {x_i}^2 + x_i$. $F$ has 4 different local minima. As shown in Figure \ref{initial_guesses}, the choice of our starting guess $\theta_0$ affects which of these minima our gradient descent converges to. Clearly, our choice of $\theta_0$ biases our solution towards points close to our starting guess. For a convex function, this is less problematic because we are only concerned with one minimum, but with non-convex functions, our starting guess might cause our descent to converge on a local minimum instead of the global minimum.
+
+\begin{figure}[h!]\label{initial_guesses}
+  \caption{Modifying the initial guess for gradient descent can result in different solutions for functions with multiple minima. The different colored regions converge to different local minima of $F$ (denoted in red). }
+  \centering
+    \includegraphics[width=0.5\textwidth]{figures/1_2_start_guesses.jpg}
+\end{figure}
+
+Step size has a significant effect for gradient descent on both non-convex and convex solution. In general, step size represents a trade-off between computation efficiency and accuracy of output. With a smaller step-size, we can attain a more precise minimum, but it takes more iterations to get there. Take the quadratic bowl, $Q(x,y) = X^2 + y^2$ as an example. If we start at $\theta_0 = (1,1)$ with $\gamma = 0.01$, we converge to $x_{min} \approx (0,0)$ in about 500 steps. With $\gamma = 0.1$, we converge to the same answer in about 60 steps. There is a limit to how much we can increase the step size though. In our quadratic bowl example, if we increase $\gamma = 1$, then gradient descent fails to converge on any minimum. It actually oscillates back and forth over the minimum at $x = (0,0)$ and never reaches it. Thus, if we use a fixed value for $\gamma$, we need to do so carefully. There are ways to dynamically choose a value of $\gamma$ on each step, namely a procedure called line search, but that is beyond the scope of this paper.
+
+The convergence threshold has a similar effect on gradient descent as the step size in that it represents a trade-off between computational efficiency and precision. With a greater threshold, we take less time to converge, but the solution is farther from the actual minimum. For example, for our non-convex function $F$, if we use $\gamma = 0.1$,  $\theta_0 = (2,0)$, and $c = 0.00001$, then we converge to $x_{min} = (-0.64,-0.64)$ in 18 steps. When we change to $c = 0.001$, we converge to $x_{min} = (-0.54,-0.64)$ in 12 steps. We saved 33 percent of our work at the cost of a less precise answer.
+
+\subsection{Numerical vs. Analytical Gradient Calculations}
+We can also compute the gradient of our function numerically using central finite differences. While this approach works well for functions whose slope is slow-varying, it breaks down for functions that have quickly varying gradients. The quadratic bowl function from above, $G$, has a relatively slow-varying gradient. Thus, when the gradient is computed numerically at various points, the numerical gradient does not differ from the actual gradient. The function $F$ from above, however, does has a quickly varying gradient, and for most points close to the origin, where the gradient is most variable, the numerical gradient differs significantly from the actual gradient. 
+
+It should be noted that the differences between the analytical (actual) gradient and the numerically calculated gradient depends heavily on the step size we choose for our calculations, a smaller value yielding a more accurate gradient.
+
+\subsection{Comparing to Matlab}
+In general, the built-in Matlab function for function minimization, fminunc(), outperforms our gradient descent procedure. For comparable accuracy, fminunc uses about 10\% to 20\% of the function calls that our gradient descent procedure requires when computing the local minimum for our non-convex function $F$.
+
 \section{Linear Basis Function Regression}\label{sec-basis}
 In this problem, we are asked to solve a linear regression problem in two ways. First, we use the analytic solution for linear regression to determine the maximum likelihood weight vector in a variety of feature spaces. We then use the gradient descent approach from Problem~\ref{sec-gradient-descent} to determine approximate solutions for each set of features. We compare the two algorithms by using sum-squared error as a metric.
 \subsection{Analytic Solution}
